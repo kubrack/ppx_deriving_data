@@ -25,28 +25,41 @@ let rec random_expr_of_type ~loc ctyp =
 let generate_impl ~ctxt (_rec_flag, type_declarations) =
   let loc = Expansion_context.Deriver.derived_item_loc ctxt in
   let type_decl = List.nth type_declarations 0 in
-      let type_name = type_decl.ptype_name.txt in
-      let body =
-        match type_decl.ptype_kind with
-        | Ptype_record labels ->
-            let gens =
-              labels
-              |> List.map (fun ld ->
-                  let field_name = ld.pld_name.txt in
-                  let gen = random_expr_of_type ~loc ld.pld_type in
-                  (Located.lident ~loc field_name, gen)
-                )
-            in
-            pexp_record ~loc gens None
-        | _ -> Location.raise_errorf ~loc "Only record types are supported"
-      in
-      let func_name = "random_" ^ type_name in
-      let body = [%expr fun () -> [%e body]] in
-      [pstr_value ~loc Nonrecursive 
-         [value_binding ~loc ~pat:(pvar ~loc func_name) ~expr:body]]
+    let type_name = type_decl.ptype_name.txt in
+    let body =
+      match type_decl.ptype_kind with
+      | Ptype_record labels ->
+          let gens =
+            labels
+            |> List.map (fun ld ->
+                let field_name = ld.pld_name.txt in
+                let gen = random_expr_of_type ~loc ld.pld_type in
+                (Located.lident ~loc field_name, gen)
+              )
+          in
+          pexp_record ~loc gens None
+      | _ -> Location.raise_errorf ~loc "Only record types are supported"
+    in
+    let func_name = "random_" ^ type_name in
+    let body = [%expr fun () -> [%e body]] in
+    [pstr_value ~loc Nonrecursive 
+       [value_binding ~loc ~pat:(pvar ~loc func_name) ~expr:body]]
+
+let generate_intf ~ctxt (_rec_flag, type_declarations) =
+  let loc = Expansion_context.Deriver.derived_item_loc ctxt in
+  let type_decl = List.nth type_declarations 0 in
+  let type_name = type_decl.ptype_name.txt in
+  let func_name = "random_" ^ type_name in
+  let unit_typ = ptyp_constr ~loc (Located.lident ~loc "unit") [] in
+  let return_typ = ptyp_constr ~loc (Located.lident ~loc type_name) [] in
+  let typ = ptyp_arrow ~loc Nolabel unit_typ return_typ in
+  [psig_value ~loc (value_description ~loc ~name:(Located.mk ~loc func_name) ~type_:typ ~prim:[])]
 
 let impl_generator = Deriving.Generator.V2.make_noarg generate_impl
+let intf_generator = Deriving.Generator.V2.make_noarg generate_intf
 
 let random_data =
-  Deriving.add "random_data" ~str_type_decl:impl_generator
+  Deriving.add "random_data" 
+    ~str_type_decl:impl_generator
+    ~sig_type_decl:intf_generator
 

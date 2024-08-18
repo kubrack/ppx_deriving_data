@@ -1,6 +1,7 @@
 (library
  (public_name ppx_deriving_data)
  (name ppx_deriving_data)
+ (synopsis "[@@deriving random_data]")
  (kind ppx_deriver)
  (libraries ppxlib)
  (preprocess (pps ppxlib.metaquot)))
