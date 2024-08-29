@@ -1,0 +1,30 @@
+# Local and temp dirs
+data
+_build
+ltxpng
+.cache
+.merlin
+.DS_Store
+
+# Compiled sources & temp files
+*.s
+*.o
+*.a
+*.#*
+*.ps
+*.log
+*.pid
+*.pyc
+*.exe
+*.cmi
+*.cmo
+*.cmx
+*.tex
+*.tsv
+*.pdf
+*.cmxa
+*.annot
+*.install
+
+git_commit.ml
+compile_commands.json

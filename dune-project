@@ -11,7 +11,7 @@
 
 (maintainers "Oleksandr Kubrak")
 
-(license ISC)
+(license "ISC")
 
 (package
  (name ppx_deriving_data)
