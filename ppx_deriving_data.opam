@@ -4,7 +4,7 @@ synopsis:
   "PPX deriver that will generate random data from the record type definition"
 maintainer: ["Oleksandr Kubrak"]
 authors: ["Oleksandr Kubrak"]
-license: "LICENSE"
+license: "ISC"
 tags: ["topics" "ppx_deriving_data"]
 homepage: "https://github.com/kubrack/ppx_deriving_data"
 bug-reports: "https://github.com/kubrack/ppx_deriving_data/issues"
